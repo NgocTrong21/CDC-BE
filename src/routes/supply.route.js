@@ -52,5 +52,10 @@ router.post(
   supplyController.importByExcel
 );
 router.post("/create_report", authMiddleware, supplyController.create_report);
+router.post(
+  "/create_report_warehouse",
+  authMiddleware,
+  supplyController.create_report_warehouse
+);
 
 module.exports = router;
