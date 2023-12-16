@@ -1,18 +1,20 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class EmailConfig extends Model {
     static associate(models) {
-      EmailConfig.belongsTo(models.Role, { foreignKey: 'role_id', targetKey: 'id' });
+      EmailConfig.belongsTo(models.Role, { foreignKey: "role_id" });
+      EmailConfig.belongsTo(models.Action, { foreignKey: "action_id" });
     }
   }
-  EmailConfig.init({
-    role_id: DataTypes.INTEGER,
-    check: DataTypes.INTEGER,
-    action_id: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'EmailConfig',
-  });
+  EmailConfig.init(
+    {
+      check: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "EmailConfig",
+    }
+  );
   return EmailConfig;
 };

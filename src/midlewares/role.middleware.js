@@ -25,4 +25,6 @@ module.exports = {
   isTk: role(RoleSystem.TK),
   isPtpvt: role(RoleSystem.PTPVT),
   isUser: role(RoleSystem.USER),
+  isGdpvt: role(RoleSystem.GDPVT),
+  isNvqlvt: role(RoleSystem.NVQLVT),
 }

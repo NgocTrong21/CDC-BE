@@ -135,6 +135,14 @@ module.exports.ACCOUNT_ACTIVED = {
   code: 1014,
   messageCode: "ACCOUNT_ACTIVED ",
 };
+module.exports.ORDER_APPROVED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Đơn đã được phê duyệt",
+  code: 1014,
+  messageCode: "ORDER_APPROVED",
+};
 module.exports.TOKEN_WRONG = {
   status: 200,
   success: false,
@@ -279,6 +287,22 @@ module.exports.EQUIPMENT_NOT_FOUND = {
   code: 1032,
   messageCode: "EQUIPMENT_NOT_FOUND",
 };
+module.exports.ORDER_NOT_FOUND = {
+  status: 500,
+  success: false,
+  data: null,
+  message: "Không tìm thấy đơn trên hệ thống",
+  code: 1032,
+  messageCode: "ORDER_NOT_FOUND",
+};
+module.exports.WAREHOUSE_NOT_FOUND = {
+  status: 500,
+  success: false,
+  data: null,
+  message: "Không tìm thấy kho trên hệ thống",
+  code: 1032,
+  messageCode: "WAREHOUSE_NOT_FOUND",
+};
 module.exports.RISK_LEVEL_NOT_FOUND = {
   status: 500,
   success: false,
@@ -319,8 +343,16 @@ module.exports.SUPPLY_NOT_FOUND = {
   code: 1037,
   messageCode: "SUPPLY_NOT_FOUND",
 };
+module.exports.QUANTITY_NOT_ENOUGH = {
+  status: 400,
+  success: false,
+  data: null,
+  message: "Số lượng tồn kho vật tư không đủ",
+  code: 1037,
+  messageCode: "QUANTITY_NOT_ENOUGH",
+};
 module.exports.SUPPLY_DUPLICATED = {
-  status: 200,
+  status: 400,
   success: false,
   data: null,
   message: "Thông tin vật tư đã tồn tại trên hệ thống",
@@ -328,10 +360,50 @@ module.exports.SUPPLY_DUPLICATED = {
   messageCode: "SUPPLY_DUPLICATED",
 };
 module.exports.EQUIPMENT_FIELD_DUPLICATED = {
-  status: 200,
+  status: 400,
   success: false,
   data: null,
   message: "Thông tin model hoặc serial của thiết bị đã tồn tại trên hệ thống",
   code: 1039,
   messageCode: "EQUIPMENT_FIELD_DUPLICATED",
+};
+module.exports.SUPPLY_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã và số lô vật tư đã tồn tại trên hệ thống",
+  code: 10340,
+  messageCode: "SUPPLY_FIELD_DUPLICATED",
+};
+module.exports.WAREHOUSE_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã kho đã tồn tại trên hệ thống",
+  code: 10341,
+  messageCode: "WAREHOUSE_FIELD_DUPLICATED",
+};
+module.exports.INBOUND_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã phiếu đã tồn tại trên hệ thống",
+  code: 10342,
+  messageCode: "INBOUND_FIELD_DUPLICATED",
+};
+module.exports.OUTBOUND_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã phiếu đã tồn tại trên hệ thống",
+  code: 10343,
+  messageCode: "OUTBOUND_FIELD_DUPLICATED",
+};
+module.exports.EMPTY_SUPPLIES = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Vật tư bị trống. Vui lòng nhập thông tin vật tư",
+  code: 10344,
+  messageCode: "EMPTY_SUPPLIES",
 };

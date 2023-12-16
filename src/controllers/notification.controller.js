@@ -5,63 +5,53 @@ const { successHandler, errorHandler } = require("../utils/ResponseHandle");
 
 exports.list = async (req, res) => {
   try {
-    let { limit = 10 } = req?.query;
-    let page = req?.query?.page;
-    let include = [
-      { model: db.Action, attributes: ['id', 'name'] },
-      { model: db.User, attributes: ['id', 'name'] },
-      { model: db.Equipment, attributes: ['id', 'name'] },
-      { model: db.Department, attributes: ['id', 'name'] },
-    ];
-    let notifications = await getList(limit, page, {}, 'Notification', include);
+    let { limit = 10, page } = req?.query;
+    let notifications = await db.Notification.findAndCountAll({
+      order: [["createdAt", "DESC"]],
+      limit: limit,
+      offset: page > 1 ? limit * (page - 1) : 0,
+      include: [{ model: db.User, attributes: ["id", "name"] }],
+      raw: false,
+    });
     return successHandler(res, { notifications }, 200);
-  } catch(error) {
-    debugger;
-    console.log("___error___", error);
+  } catch (error) {
     return errorHandler(res, error);
   }
-}
+};
 
 exports.delete = async (req, res) => {
   try {
     await db.sequelize.transaction(async (t) => {
       await db.Notification.destroy({
         where: { id: req?.body?.id },
-        transaction: t
+        transaction: t,
       });
       return successHandler(res, {}, 201);
-    })
-  } catch(error) {
-    debugger;
-    console.log("___error___", error);
+    });
+  } catch (error) {
     return errorHandler(res, error);
   }
-}
+};
 
 exports.deleteAll = async (req, res) => {
   try {
-    
-  } catch(error) {
-    debugger;
-    console.log("___error___", error);
+  } catch (error) {
     return errorHandler(res, error);
   }
-}
+};
 
 exports.update = async (req, res) => {
   try {
     await db.sequelize.transaction(async (t) => {
       await db.Notification.update(
         { is_seen: 1 },
-        { 
+        {
           where: { id: req?.body?.id },
-          transaction: t
+          transaction: t,
         }
-      )
-    })
-  } catch(error) {
-    debugger;
-    console.log("___error___", error);
+      );
+    });
+  } catch (error) {
     return errorHandler(res, error);
   }
-}
+};

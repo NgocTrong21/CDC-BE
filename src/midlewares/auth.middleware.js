@@ -6,20 +6,18 @@ const { errorHandler } = require("../utils/ResponseHandle");
 const auth = async (req, res, next) => {
   try {
     const access_token = req.header("Authorization")?.split(" ")[1];
-    if (!access_token)
-      return errorHandler(res, err.NOT_AUTHORIZED);
+    if (!access_token) return errorHandler(res, err.NOT_AUTHORIZED);
     const data = await verifyAccessToken(access_token);
-    if(data?.data?.email) {
+    if (data?.data?.email) {
       const user = await db.User.findOne({
         where: {
           email: data?.data?.email,
           id: data?.data?.id,
-          role_id: data?.data?.role_id
+          role_id: data?.data?.role_id,
         },
-        raw: false
+        raw: false,
       });
-      if (!user)
-        return errorHandler(res, err.INVALID_TOKEN);
+      if (!user) return errorHandler(res, err.INVALID_TOKEN);
       req.user = user;
       req.access_token = access_token;
       // req.isAdmin = () => {

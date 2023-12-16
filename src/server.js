@@ -1,8 +1,8 @@
-import express from "express";
-import bodyParser from "body-parser";
-import routes from "./routes/index";
-import connectDB from "./config/connectDB";
-import cookieParser from "cookie-parser";
+const express = require("express");
+const bodyParser = require("body-parser");
+const routes = require("./routes/index");
+const connectDB = require("./config/connectDB");
+const cookieParser = require("cookie-parser");
 const { errorHandler } = require("./utils/ResponseHandle");
 require("dotenv").config();
 const path = require("path");
@@ -12,7 +12,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 
 const corsConfig = {
   credentials: true,
-  origin: [process.env.URL_REACT, "http://localhost:3002"],
+  origin: [process.env.URL_REACT, "http://localhost:3000"],
 };
 
 let app = express();
@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true);
 
   // set cookie
-  res.setHeader("Set-Cookie", "visited=true; Max-Age=3000; HttpOnly, Secure");
+  res.setHeader("Set-Cookie", "visited=true; Max-Age=3001; HttpOnly, Secure");
 
   // Pass to next layer of middleware
   next();
@@ -79,5 +79,6 @@ app.use((err, req, res, next) => {
 connectDB();
 let port = process.env.PORT || 6969;
 app.listen(port, () => {
-  console.log(port);
+  console.log("Server connection: OK, port: " + port);
+  console.log("============================================================");
 });
