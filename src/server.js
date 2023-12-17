@@ -12,7 +12,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 
 const corsConfig = {
   credentials: true,
-  origin: [process.env.URL_REACT, "http://localhost:3000"],
+  origin: [process.env.URL_REACT],
 };
 
 let app = express();
