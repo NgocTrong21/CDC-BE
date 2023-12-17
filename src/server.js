@@ -80,5 +80,6 @@ connectDB();
 let port = process.env.PORT || 6969;
 app.listen(port, () => {
   console.log("Server connection: OK, port: " + port);
+  console.log("Server connection: OK, cors: " + process.env.URL_REACT);
   console.log("============================================================");
 });
