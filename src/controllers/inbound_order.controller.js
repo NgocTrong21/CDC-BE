@@ -8,13 +8,21 @@ exports.create = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
+      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      if (supplies.length === 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
+      if(emptyQuantitySupplies.length > 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
       const inboundOrderInDB = await db.Inbound_Order.findOne({
         where: {
           code: data.code,
         },
       });
-      if (inboundOrderInDB)
+      if (inboundOrderInDB){
         return errorHandler(res, err.INBOUND_FIELD_DUPLICATED);
+      }
       const inbound_order = await db.Inbound_Order.create(
         { ...data, status_id: 1 },
         {
@@ -170,6 +178,13 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
+      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      if (supplies.length === 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
+      if(emptyQuantitySupplies.length > 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
       const isHas = await db.Inbound_Order.findOne({
         where: { id: data?.id },
       });

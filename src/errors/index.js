@@ -407,3 +407,11 @@ module.exports.EMPTY_SUPPLIES = {
   code: 10344,
   messageCode: "EMPTY_SUPPLIES",
 };
+module.exports.EMPTY_QUANTITY_SUPPLIES = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Số lượng vật tư bị trống. Vui lòng nhập số lượng vật tư",
+  code: 10345,
+  messageCode: "EMPTY_QUANTITY_SUPPLIES",
+};

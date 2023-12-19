@@ -9,6 +9,13 @@ exports.create = async (req, res) => {
     await db.sequelize.transaction(async (t) => {
       const { data, supplies } = req?.body;
       let outbound_order;
+      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      if (supplies.length === 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
+      if(emptyQuantitySupplies.length > 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
       if (supplies.length > 0) {
         for (const supply of supplies) {
           let isHas = await db.Supply.findOne({
@@ -229,6 +236,13 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
+      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      if (supplies.length === 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
+      if(emptyQuantitySupplies.length > 0) {
+        return errorHandler(res, err.EMPTY_SUPPLIES);
+      }
       const isHas = await db.Outbound_Order.findOne({
         where: { id: data?.id },
       });
