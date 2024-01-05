@@ -23,6 +23,12 @@ router.get(
   supplyController.list
 );
 router.get(
+  "/list_supply_by_warehouse",
+  authMiddleware,
+  permissionMiddleware.CONSUMABLE_SUPPLY_READ,
+  supplyController.listSupplyByWarehouse
+);
+router.get(
   "/detail",
   authMiddleware,
   permissionMiddleware.CONSUMABLE_SUPPLY_READ,
