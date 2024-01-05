@@ -693,19 +693,20 @@ exports.create_report_by_warehouse = async (req, res) => {
       let inbound_during_period_quantity = 0;
       let outbound_during_period_quantity = 0;
       let from_start_to_now_merged = 0;
+      let totalInbound = 0;
       for (const i of supply_in_during_period) {
         if (i.supply_id === item.supply_id) {
-          inbound_during_period_quantity = i.quantity;
-          break;
+          totalInbound = totalInbound + i.quantity;
         }
       }
+      inbound_during_period_quantity = totalInbound;
+      let totalOutbound = 0;
       for (const i of supply_out_during_period) {
         if (i.supply_id === item.supply_id) {
-          outbound_during_period_quantity = -i.quantity;
-          break;
+          totalOutbound = totalOutbound + i.quantity;
         }
       }
-
+      outbound_during_period_quantity = -totalOutbound;
       for (const i of supply_from_start_to_now_merged) {
         if (i.supply_id === item.supply_id) {
           from_start_to_now_merged = i.quantity;
