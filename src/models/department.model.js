@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "to_department_id",
         as: "to_department",
       });
+      Department.hasMany(models.Supply_Outbound_Order, {
+        foreignKey: "depart_id",
+      });
     }
   }
   Department.init(

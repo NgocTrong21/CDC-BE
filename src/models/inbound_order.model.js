@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       deliver: DataTypes.STRING,
       deliver_phone: DataTypes.STRING,
       estimated_delivery_date: DataTypes.DATE,
+      receive_date: DataTypes.DATE,
       note: DataTypes.STRING,
       approve_date: DataTypes.DATE,
       provider: DataTypes.STRING,

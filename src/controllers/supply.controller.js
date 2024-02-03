@@ -122,6 +122,46 @@ exports.listSupplyByWarehouse = async (req, res) => {
   }
 };
 
+exports.listByDepart = async (req, res) => {
+  try {
+    let { limit, page, name, department_id } = req?.query;
+    let filter = {};
+    if (name) {
+      filter = {
+        ...filter,
+        [Op.or]: [
+          { name: { [Op.like]: `%${name}%` } },
+          { code: { [Op.like]: `%${name}%` } },
+        ],
+      };
+    }
+    for (let i in filter) {
+      if (!filter[i]) {
+        delete filter[i];
+      }
+    }
+    let include = [
+      {
+        model: db.Supply,
+        where: {
+          ...filter,
+        },
+        include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }],
+      },
+    ];
+    let supplies = await getList(
+      +limit,
+      page,
+      { department_id },
+      "Department_Supply",
+      include
+    );
+    return successHandler(res, { supplies, count: supplies.length }, 200);
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+
 exports.detail = async (req, res) => {
   try {
     const { id } = req.query;

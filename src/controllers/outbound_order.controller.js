@@ -8,12 +8,21 @@ exports.create = async (req, res) => {
   try {
     await db.sequelize.transaction(async (t) => {
       const { data, supplies } = req?.body;
+      let inputData = { ...data };
+      for (let i in inputData) {
+        if (!inputData[i]) {
+          delete inputData[i];
+        }
+      }
+      inputData.type = +data.type;
       let outbound_order;
-      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      const emptyQuantitySupplies = supplies.filter(
+        (item) => item.quantity === 0 || !item?.supply_id
+      );
       if (supplies.length === 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      if(emptyQuantitySupplies.length > 0) {
+      if (emptyQuantitySupplies.length > 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       if (supplies.length > 0) {
@@ -33,7 +42,7 @@ exports.create = async (req, res) => {
       }
       const outboundOrderInDB = await db.Outbound_Order.findOne({
         where: {
-          code: data.code,
+          code: inputData.code,
         },
       });
       if (outboundOrderInDB)
@@ -43,7 +52,7 @@ exports.create = async (req, res) => {
         const isHas = await db.Warehouse_Supply.findOne({
           where: {
             supply_id: supply.supply_id,
-            warehouse_id: data.warehouse_id,
+            warehouse_id: inputData.warehouse_id,
           },
         });
         if (isHas.quantity < supply.quantity) {
@@ -55,7 +64,7 @@ exports.create = async (req, res) => {
       }
       if (validate) {
         outbound_order = await db.Outbound_Order.create(
-          { ...data, status_id: 1 },
+          { ...inputData, status_id: 1 },
           {
             transaction: t,
           }
@@ -88,6 +97,7 @@ exports.create = async (req, res) => {
             {
               ...supply,
               outbound_order_id: outbound_order.id,
+              depart_id: inputData.depart_id,
             },
             { transaction: t }
           );
@@ -98,6 +108,7 @@ exports.create = async (req, res) => {
       }
     });
   } catch (error) {
+    console.log(error);
     return errorHandler(res, error);
   }
 };
@@ -141,6 +152,58 @@ exports.accept = async (req, res) => {
             },
             { where: { id: data.id }, transaction: t }
           );
+          // if (outbound_order.type === 1) {
+          //   for (const item of outbound_order.Supply_Outbound_Orders) {
+          //     const isHas = await db.Department_Supply.findOne({
+          //       where: {
+          //         supply_id: item.supply_id,
+          //         department_id: outbound_order.depart_id,
+          //       },
+          //     });
+          //     const isHasWSupply = await db.Warehouse_Supply.findOne({
+          //       where: {
+          //         supply_id: item.supply_id,
+          //         warehouse_id: outbound_order.warehouse_id,
+          //       },
+          //     });
+          //     if (!isHasWSupply) {
+          //       return errorHandler(res, err.SUPPLY_NOT_FOUND);
+          //     } else {
+          //       await db.Warehouse_Supply.update(
+          //         {
+          //           quantity:
+          //             Number(isHasWSupply.quantity) - Number(item.quantity),
+          //         },
+          //         {
+          //           where: {
+          //             id: isHasWSupply.id,
+          //           },
+          //           transaction: t,
+          //         }
+          //       );
+          //     }
+          //     if (!isHas) {
+          //       await db.Department_Supply.create(
+          //         {
+          //           supply_id: item.supply_id,
+          //           quantity: item.quantity,
+          //           department_id: outbound_order.depart_id,
+          //         },
+          //         { transaction: t }
+          //       );
+          //     } else {
+          //       await db.Department_Supply.update(
+          //         { quantity: Number(isHas.quantity) + Number(item.quantity) },
+          //         {
+          //           where: {
+          //             id: isHas.id,
+          //           },
+          //           transaction: t,
+          //         }
+          //       );
+          //     }
+          //   }
+          // } else {
           for (const item of outbound_order.Supply_Outbound_Orders) {
             const isHas = await db.Warehouse_Supply.findOne({
               where: {
@@ -162,6 +225,7 @@ exports.accept = async (req, res) => {
               );
             }
           }
+          // }
         } else if (data.status === "reject") {
           await db.Outbound_Order.update(
             {
@@ -236,15 +300,23 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
-      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      const inputData = { ...data };
+      for (let i in inputData) {
+        if (!inputData[i]) {
+          delete inputData[i];
+        }
+      }
+      const emptyQuantitySupplies = supplies.filter(
+        (item) => item.quantity === 0 || !item?.supply_id
+      );
       if (supplies.length === 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      if(emptyQuantitySupplies.length > 0) {
+      if (emptyQuantitySupplies.length > 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       const isHas = await db.Outbound_Order.findOne({
-        where: { id: data?.id },
+        where: { id: inputData?.id },
       });
       if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
       let validate = false;
@@ -253,7 +325,7 @@ exports.update = async (req, res) => {
           const isHas = await db.Warehouse_Supply.findOne({
             where: {
               supply_id: supply.supply_id,
-              warehouse_id: data.warehouse_id,
+              warehouse_id: inputData.warehouse_id,
             },
           });
           if (isHas.quantity < supply.quantity) {
@@ -268,24 +340,25 @@ exports.update = async (req, res) => {
       }
       const outboundOrderInDB = await db.Outbound_Order.findAll({
         where: {
-          code: data.code,
+          code: inputData.code,
         },
       });
       if (outboundOrderInDB.length > 1)
         return errorHandler(res, err.OUTBOUND_FIELD_DUPLICATED);
       if (validate) {
-        await db.Outbound_Order.update(data, {
-          where: { id: data?.id },
+        await db.Outbound_Order.update(inputData, {
+          where: { id: inputData?.id },
           transaction: t,
         });
         await db.Supply_Outbound_Order.destroy({
-          where: { outbound_order_id: data?.id },
+          where: { outbound_order_id: inputData?.id },
         });
         for (const supply of supplies) {
           await db.Supply_Outbound_Order.create(
             {
               ...supply,
               outbound_order_id: isHas.id,
+              depart_id: inputData.depart_id,
             },
             { transaction: t }
           );
@@ -320,11 +393,12 @@ exports.delete = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    let { limit, page, name, status_id, warehouse_id } = req?.query;
+    let { limit, page, name, status_id, warehouse_id, type } = req?.query;
 
     let filter = {
       status_id,
       warehouse_id,
+      type,
     };
 
     if (name) {

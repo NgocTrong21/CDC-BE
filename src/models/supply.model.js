@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       expiration_date: DataTypes.DATE, //hạn sd
       note: DataTypes.TEXT, // ghi chú
       provider: DataTypes.STRING, // nha cung cap
+      status: DataTypes.INTEGER, //trang thai
     },
     {
       sequelize,

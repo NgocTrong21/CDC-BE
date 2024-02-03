@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       Supply_Outbound_Order.belongsTo(models.Supply, {
         foreignKey: "supply_id",
       });
+
+      Supply_Outbound_Order.belongsTo(models.Department, {
+        foreignKey: "depart_id",
+      });
     }
   }
   Supply_Outbound_Order.init(
