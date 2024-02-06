@@ -8,11 +8,13 @@ exports.create = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
-      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      const emptyQuantitySupplies = supplies.filter(
+        (item) => item.quantity === 0 || !item?.supply_id
+      );
       if (supplies.length === 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      if(emptyQuantitySupplies.length > 0) {
+      if (emptyQuantitySupplies.length > 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       const inboundOrderInDB = await db.Inbound_Order.findOne({
@@ -20,7 +22,7 @@ exports.create = async (req, res) => {
           code: data.code,
         },
       });
-      if (inboundOrderInDB){
+      if (inboundOrderInDB) {
         return errorHandler(res, err.INBOUND_FIELD_DUPLICATED);
       }
       const inbound_order = await db.Inbound_Order.create(
@@ -97,6 +99,18 @@ exports.accept = async (req, res) => {
             { where: { id: data.id }, transaction: t }
           );
           for (const item of inbound_order.Supply_Inbound_Orders) {
+            const supplyData = await db.Supply.findOne({
+              where: {
+                id: item.supply_id,
+              },
+              attributes: ["active"],
+            });
+            if (+supplyData.active === 1) {
+              await db.Supply.update(
+                { active: 2 },
+                { where: { id: item.supply_id }, transaction: t }
+              );
+            }
             const isHas = await db.Warehouse_Supply.findOne({
               where: {
                 supply_id: item.supply_id,
@@ -138,6 +152,7 @@ exports.accept = async (req, res) => {
       return successHandler(res, {}, 200);
     }
   } catch (error) {
+    console.log(error);
     return errorHandler(res, error);
   }
 };
@@ -178,11 +193,13 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
-      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      const emptyQuantitySupplies = supplies.filter(
+        (item) => item.quantity === 0 || !item?.supply_id
+      );
       if (supplies.length === 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      if(emptyQuantitySupplies.length > 0) {
+      if (emptyQuantitySupplies.length > 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       const isHas = await db.Inbound_Order.findOne({
@@ -194,7 +211,10 @@ exports.update = async (req, res) => {
           code: data.code,
         },
       });
-      if (inboundOrderInDB?.length > 1)
+      const duplicatedData = inboundOrderInDB.filter(
+        (item) => item.id !== data.id
+      );
+      if (duplicatedData.length > 0)
         return errorHandler(res, err.INBOUND_FIELD_DUPLICATED);
       await db.Inbound_Order.update(data, {
         where: { id: data?.id },

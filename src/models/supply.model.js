@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       note: DataTypes.TEXT, // ghi chú
       provider: DataTypes.STRING, // nha cung cap
       status: DataTypes.INTEGER, //trang thai
+      active: DataTypes.INTEGER,
     },
     {
       sequelize,

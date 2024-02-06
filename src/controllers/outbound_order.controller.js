@@ -343,7 +343,10 @@ exports.update = async (req, res) => {
           code: inputData.code,
         },
       });
-      if (outboundOrderInDB.length > 1)
+      const duplicatedData = outboundOrderInDB.filter(
+        (item) => item.id !== inputData.id
+      );
+      if (duplicatedData.length > 0)
         return errorHandler(res, err.OUTBOUND_FIELD_DUPLICATED);
       if (validate) {
         await db.Outbound_Order.update(inputData, {
