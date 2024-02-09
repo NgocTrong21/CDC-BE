@@ -49,7 +49,8 @@ exports.update = async (req, res) => {
           lot_number: `${data.lot_number}`,
         },
       });
-      if (supplyInDB?.length > 1)
+      const duplicatedData = supplyInDB.filter((item) => item.id !== data.id);
+      if (duplicatedData.length > 0)
         return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
       if (data?.image) {
         const result = await cloudinary.uploader.upload(data?.image, {
@@ -68,6 +69,7 @@ exports.update = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
+    console.log(error);
     return errorHandler(res, error);
   }
 };

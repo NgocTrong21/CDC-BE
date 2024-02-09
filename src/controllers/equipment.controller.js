@@ -15,13 +15,13 @@ exports.create = async (req, res) => {
   try {
     const data = req?.body;
     await db.sequelize.transaction(async (t) => {
-      // const equipmentInDB = await db.Equipment.findOne({
-      //   where: {
-      //     fixed_asset_number: data?.fixed_asset_number,
-      //   },
-      // });
-      // if (equipmentInDB)
-      //   return errorHandler(res, err.EQUIPMENT_FIELD_DUPLICATED);
+      const equipmentInDB = await db.Equipment.findOne({
+        where: {
+          fixed_asset_number: data?.fixed_asset_number,
+        },
+      });
+      if (equipmentInDB)
+        return errorHandler(res, err.EQUIPMENT_FIELD_DUPLICATED);
       let equipment;
       if (data?.image) {
         const result = await cloudinary.uploader.upload(data?.image, {
@@ -99,20 +99,16 @@ exports.update = async (req, res) => {
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.EQUIPMENT_NOT_FOUND);
-      // let orArray = [];
-      // if (data?.code) {
-      //   orArray.push({ code: data?.code });
-      // }
-      // if (data?.serial) {
-      //   orArray.push({ serial: data?.serial });
-      // }
-      // const isDuplicate = await db.Equipment.findOne({
+      // const equipmentInDB = await db.Equipment.findAll({
       //   where: {
-      //     [Op.or]: orArray,
+      //     fixed_asset_number: data?.fixed_asset_number,
       //   },
-      //   attributes: ['id', 'code', 'serial'],
       // });
-      // if (isDuplicate) return errorHandler(res, err.EQUIPMENT_FIELD_DUPLICATED);
+      // const duplicatedData = equipmentInDB.filter(
+      //   (item) => item.id !== data.id
+      // );
+      // if (duplicatedData.length > 0)
+      //   return errorHandler(res, err.EQUIPMENT_FIELD_DUPLICATED);
       if (data?.image) {
         const result = await cloudinary.uploader.upload(data?.image, {
           folder: "equipment",

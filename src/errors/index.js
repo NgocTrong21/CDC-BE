@@ -360,10 +360,10 @@ module.exports.SUPPLY_DUPLICATED = {
   messageCode: "SUPPLY_DUPLICATED",
 };
 module.exports.EQUIPMENT_FIELD_DUPLICATED = {
-  status: 400,
+  status: 200,
   success: false,
   data: null,
-  message: "Thông tin model hoặc serial của thiết bị đã tồn tại trên hệ thống",
+  message: "Thông tin số hiệu TSCĐ của thiết bị đã tồn tại trên hệ thống",
   code: 1039,
   messageCode: "EQUIPMENT_FIELD_DUPLICATED",
 };
