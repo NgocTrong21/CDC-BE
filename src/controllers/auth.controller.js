@@ -23,7 +23,7 @@ exports.register = async (req, res) => {
     const user = await db.User.create({
       email,
       password: hashPassword,
-      role_id: 9,
+      role_id: 5,
     });
     const active_token = await sendActiveEmail(req, user);
     user.active_token = active_token;
