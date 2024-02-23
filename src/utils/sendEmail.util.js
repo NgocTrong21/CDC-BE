@@ -97,11 +97,11 @@ const getEmailTemplate = (url, textButton, content) => {
         <div class="content">
           <div class="top">
             <img src="https://res.cloudinary.com/polarbearhust/image/upload/v1690364602/equipment/r8fnbjzk8rzmiuwgkx6k.png" alt="mdm-ibme" class="top-image"/>
-            <div class="top-title">Bệnh viện iBME</div>
+            <div class="top-title">CDC Hải Phòng</div>
           </div>
           <div class="divider"></div>
           <p style="font-size: 20px; font-weight: bold;">Chào bạn,</p>
-          <p>Hệ thống quản lý trang thiết bị y tế của bệnh viện iBME xin gửi tới bạn thông báo sau:
+          <p>Hệ thống quản lý thiết bị và vật tư y tế trung tâm CDC Hải Phòng xin gửi tới bạn thông báo sau:
           ${content}
           <p>Vui lòng click vào đường link bên dưới để xem thông tin chi tiết:</p>
           <div style="display: flex; justify-content: center; margin: 30px 0;">
